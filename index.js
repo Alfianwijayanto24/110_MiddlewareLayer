@@ -15,3 +15,21 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use((req, res, next) => {
+    const start = Date.now()
+
+    req.on("end", () => {
+        const duration = Date.now() - start
+        console.log({
+            method: req.method,
+            url: req.originalUrl,
+            status: req.statusCode,
+            duration: `${duration}ms`
+        })
+    })
+    next()
+})
+
